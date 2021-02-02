@@ -9,7 +9,7 @@ class TrainableLayer(ABC):
         ...
 
 
-class DenseLayer:
+class DenseLayer(TrainableLayer):
     def __init__(self, no_input, no_output):
         self.w = gc.value(np.random.uniform(-.5, .5, size=[no_input, no_output]))
         self.b = gc.value(np.zeros([no_output]))
