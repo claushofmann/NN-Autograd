@@ -25,6 +25,15 @@ class Node(ABC):
     def visit(self, visitor):
         ...
 
+    @abstractmethod
+    def _local_invalidate(self, invalidator):
+        ...
+
+    def _invalidate(self, invalidator):
+        self._local_invalidate(invalidator)
+        for i, c in self.consumers:
+            c._invalidate(self)
+
 
 class ComputedNode(Node):
     def __init__(self, op, inputs):
@@ -40,7 +49,7 @@ class ComputedNode(Node):
         return self.cache is None
 
     def get_value(self):
-        if self.is_dirty() or any(inp.is_dirty for inp in self.inputs):
+        if self.is_dirty() or any(inp.is_dirty() for inp in self.inputs):
             self.cache = self.op.op([inp.get_value() for inp in self.inputs])
         return self.cache
 
@@ -49,6 +58,9 @@ class ComputedNode(Node):
 
     def visit(self, visitor, *args):
         return visitor.visit_computed_node(self, *args)
+
+    def _local_invalidate(self, invalidator):
+        self.cache = None
 
 
 class ValueNode(Node):
@@ -64,7 +76,7 @@ class ValueNode(Node):
     def set_value(self, value):
         assert value.shape == self.__value.shape
         self.__value = value
-        self.dirty = True
+        self._invalidate(self)
 
     def get_value(self):
         return self.__value
@@ -74,6 +86,10 @@ class ValueNode(Node):
 
     def visit(self, visitor, *args):
         return visitor.visit_value_node(self, *args)
+
+    def _local_invalidate(self, invalidator):
+        self.dirty = True
+
 
 class NodeVisitor(ABC):
     @abstractmethod
