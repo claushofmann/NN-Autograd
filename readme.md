@@ -14,9 +14,9 @@ h1 = gc.relu(a1)
 a2 = layers[1](h1)
 h2 = gc.relu(a2)
 a3 = layers[2](h2)
-score = gc.softmax_cross_entropy(a3, ys)
+loss = gc.softmax_cross_entropy(a3, ys)
 
-backprop = BackProp(score)
+backprop = BackProp(loss)
 gradients = backprop.compute_gradients(gradient_nodes)
 ```
 
