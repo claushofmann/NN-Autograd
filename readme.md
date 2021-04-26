@@ -15,6 +15,9 @@ a2 = layers[1](h1)
 h2 = gc.relu(a2)
 a3 = layers[2](h2)
 score = gc.softmax_cross_entropy(a3, ys)
+
+backprop = BackProp(score)
+gradients = backprop.compute_gradients(gradient_nodes)
 ```
 
 More detailed examples for training NNs can be found in `examples/`
