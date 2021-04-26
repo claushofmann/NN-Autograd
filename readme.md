@@ -3,6 +3,8 @@
 This is a simple implementation of automatic differentiation for neural networks. Neural networks can be defined as
 computational graphs, which allows for the automatic computation of the network's gradients using back propagation.
 
+The implementation's API works in a similar fashion as popular deep learning frameworks like TensorFlow and Keras (not quite matching all their capabilities though 😁)
+
 ## Simple example
 
 ```
